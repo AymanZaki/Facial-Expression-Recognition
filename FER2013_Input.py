@@ -1,6 +1,7 @@
 import csv
 import numpy as np
-
+import tensorflow as tf
+from PIL import Image
 
 class FER2013_Input:
 	Training_labels = []
@@ -25,8 +26,10 @@ class FER2013_Input:
 			with open(path) as csvfile:
 				readCSV = csv.reader(csvfile, delimiter = ',')
 				for row in readCSV:
-					Training_labels.append(row[0])
-					Image48x48 = np.reshape(row[1].split(), (48, 48))
+					Training_labels.append(int(row[0]))
+					Image = row[1].split()
+					Image = [int(i) for i in Image]
+					Image48x48 = np.reshape(Image, (48, 48))
 					Training_Images.append(Image48x48)
 			return  Training_labels, Training_Images
 
@@ -38,8 +41,10 @@ class FER2013_Input:
 			with open(path) as csvfile:
 				readCSV = csv.reader(csvfile, delimiter = ',')
 				for row in readCSV:
-					Validation_labels.append(row[0])
-					Image48x48 = np.reshape(row[1].split(), (48, 48))
+					Validation_labels.append(int(row[0]))
+					Image = row[1].split()
+					Image = [int(i) for i in Image]
+					Image48x48 = np.reshape(Image, (48, 48))
 					Validation_Images.append(Image48x48)
 			return  Validation_labels, Validation_Images
 
@@ -50,13 +55,16 @@ class FER2013_Input:
 			with open(path) as csvfile:
 				readCSV = csv.reader(csvfile, delimiter = ',')			
 				for row in readCSV:
-					Testing_labels.append(row[0])
-					Image48x48 = np.reshape(row[1].split(), (48, 48))
+					Testing_labels.append(int(row[0]))
+					Image = row[1].split()
+					Image = [int(i) for i in Image]
+					Image48x48 = np.reshape(Image, (48, 48))
 					Testing_Images.append(Image48x48)
 			return  Testing_labels, Testing_Images
 
-	def Get_batch(self, Batch_Number, Mode):
-		begin = (Batch_Number - 1)*self.Batch_Size
+	#Batch_Number 0 based
+	def Get_batch(self, Batch_Number, Mode): 
+		begin = Batch_Number * self.Batch_Size
 		end = begin + self.Batch_Size
 		Labels = []
 		Images = []
