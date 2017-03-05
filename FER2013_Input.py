@@ -26,11 +26,15 @@ class FER2013_Input:
 			with open(path) as csvfile:
 				readCSV = csv.reader(csvfile, delimiter = ',')
 				for row in readCSV:
-					Training_labels.append(int(row[0]))
+					Label = [0] * 7
+					Label[int(row[0])] = 1
+					Training_labels.append(Label)
 					Image = row[1].split()
 					Image = [int(i) for i in Image]
 					Image48x48 = np.reshape(Image, (48, 48))
-					Training_Images.append(Image48x48)
+					Image42x42 = Image48x48.copy()
+					Image42x42.resize(42,42)
+					Training_Images.append(Image42x42)
 			return  Training_labels, Training_Images
 
 
@@ -41,11 +45,15 @@ class FER2013_Input:
 			with open(path) as csvfile:
 				readCSV = csv.reader(csvfile, delimiter = ',')
 				for row in readCSV:
-					Validation_labels.append(int(row[0]))
+					Label = [0] * 7
+					Label[int(row[0])] = 1
+					Validation_labels.append(Label)
 					Image = row[1].split()
 					Image = [int(i) for i in Image]
 					Image48x48 = np.reshape(Image, (48, 48))
-					Validation_Images.append(Image48x48)
+					Image42x42 = Image48x48.copy()
+					Image42x42.resize(42,42)
+					Validation_Images.append(Image42x42)
 			return  Validation_labels, Validation_Images
 
 	def FER2013_Testing_Set (self):
@@ -55,15 +63,19 @@ class FER2013_Input:
 			with open(path) as csvfile:
 				readCSV = csv.reader(csvfile, delimiter = ',')			
 				for row in readCSV:
-					Testing_labels.append(int(row[0]))
+					Label = [0] * 7
+					Label[int(row[0])] = 1
+					Testing_labels.append(Label)
 					Image = row[1].split()
 					Image = [int(i) for i in Image]
 					Image48x48 = np.reshape(Image, (48, 48))
-					Testing_Images.append(Image48x48)
+					Image42x42 = Image48x48.copy()
+					Image42x42.resize(42,42)
+					Testing_Images.append(Image42x42)
 			return  Testing_labels, Testing_Images
 
 	#Batch_Number 0 based
-	def Get_batch(self, Batch_Number, Mode): 
+	def Get_batch(self, Batch_Number, Mode):
 		begin = Batch_Number * self.Batch_Size
 		end = begin + self.Batch_Size
 		Labels = []
