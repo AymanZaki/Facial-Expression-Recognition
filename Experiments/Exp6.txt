@@ -1,0 +1,5 @@
+Learning Rate = 0.00006
+Number of Epochs = 1500
+Starting Loss = 469.13204968
+Ending Loss = 438.10468781
+Accuracy = 13.25%
