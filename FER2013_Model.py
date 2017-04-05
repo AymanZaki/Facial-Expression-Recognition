@@ -60,16 +60,16 @@ def convolutional_neural_network(x):
      return fc2
 
 def train_neural_network(x):
-     fer = FER2013_Input('/media/ayman/01D28655B731EBD0/FCIS/4th/GP/FER2013-DataSet/')
+     fer = FER2013_Input('/home/alaa/Desktop/GP/')
      #training_data
      #training_labels, training_images = fer.FER2013_Training_Set();
      #training_images = tf.image.resize_images(training_images, [42, 42])
      prediction = convolutional_neural_network(x)#Ali
      
      cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=prediction))#Ali
-     optimizer = tf.train.GradientDescentOptimizer(0.00001).minimize(cost)
+     optimizer = tf.train.GradientDescentOptimizer(0.1).minimize(cost)
      
-     hm_epochs = 1000
+     hm_epochs = 16
      with tf.Session() as sess:
         #training_images = tf.image.resize_images(training_images, (42, 42))
         sess.run(tf.global_variables_initializer())#Ali
@@ -85,7 +85,7 @@ def train_neural_network(x):
                 epoch_loss += c
                 #print('Hello')
 
-            print('Epoch', epoch, 'completed out of',hm_epochs,'loss:',epoch_loss)
+            print('Epoch', epoch+1, 'completed out of',hm_epochs,'loss:',epoch_loss)
 
         correct = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
         testing_labels, testing_images = fer.FER2013_Testing_Set()
