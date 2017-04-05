@@ -60,7 +60,7 @@ def convolutional_neural_network(x):
      return fc2
 
 def train_neural_network(x):
-     fer = FER2013_Input('/home/alaa/Desktop/GP/')
+     fer = FER2013_Input('/media/ayman/01D28655B731EBD0/FCIS/4th/GP/FER2013-DataSet/')
      #training_data
      #training_labels, training_images = fer.FER2013_Training_Set();
      #training_images = tf.image.resize_images(training_images, [42, 42])

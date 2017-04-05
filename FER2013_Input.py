@@ -6,6 +6,7 @@ from numpy import array
 from scipy.misc import toimage
 from resizeimage import resizeimage
 
+
 class FER2013_Input:
 	Training_labels = []
 	Training_Images = []
@@ -43,8 +44,11 @@ class FER2013_Input:
 					#Resize Image to 42x42
 					Image42x42 = resizeimage.resize_contain(Image42x42, [42, 42])
 					#Convert Image to 2D array 
-					Image42x42 = array(Image42x42)
+					Image42x42 = np.uint8(Image42x42.convert('L'))
 					Training_Images.append(Image42x42)
+			print(Training_Images[0])
+			print(type(Training_Images[0]))
+			print((Training_Images[0].shape))
 			return  Training_labels, Training_Images
 
 
@@ -69,7 +73,7 @@ class FER2013_Input:
 					#Resize Image to 42x42
 					Image42x42 = resizeimage.resize_contain(Image42x42, [42, 42])
 					#Convert Image to 2D array 
-					Image42x42 = array(Image42x42)			
+					Image42x42 = np.uint8(Image42x42.convert('L'))		
 					Validation_Images.append(Image42x42)
 			return  Validation_labels, Validation_Images
 
@@ -94,7 +98,7 @@ class FER2013_Input:
 					#Resize Image to 42x42
 					Image42x42 = resizeimage.resize_contain(Image42x42, [42, 42])
 					#Convert Image to 2D array 
-					Image42x42 = array(Image42x42)
+					Image42x42 = np.uint8(Image42x42.convert('L'))
 					Testing_Images.append(Image42x42)
 			return  Testing_labels, Testing_Images
 
