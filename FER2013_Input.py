@@ -2,6 +2,9 @@ import csv
 import numpy as np
 import tensorflow as tf
 from PIL import Image
+from numpy import array
+from scipy.misc import toimage
+from resizeimage import resizeimage
 
 class FER2013_Input:
 	Training_labels = []
@@ -25,15 +28,22 @@ class FER2013_Input:
 			Training_Images = []
 			with open(path) as csvfile:
 				readCSV = csv.reader(csvfile, delimiter = ',')
+				#row[0] = Labels, row[1] = Image Pixels
 				for row in readCSV:
 					Label = [0] * 7
 					Label[int(row[0])] = 1
 					Training_labels.append(Label)
-					Image = row[1].split()
-					Image = [int(i) for i in Image]
-					Image48x48 = np.reshape(Image, (48, 48))
-					Image42x42 = Image48x48.copy()
-					Image42x42.resize(42,42)
+					image = row[1].split()
+					#Cast strings to integer 
+					image = [int(i) for i in image]
+					#Convert 1D array to 2D array 48x48
+					Image48x48 = np.reshape(image, (48, 48))
+					#Convert 2D array to Image
+					Image42x42 = Image.fromarray(np.uint8(Image48x48))
+					#Resize Image to 42x42
+					Image42x42 = resizeimage.resize_contain(Image42x42, [42, 42])
+					#Convert Image to 2D array 
+					Image42x42 = array(Image42x42)
 					Training_Images.append(Image42x42)
 			return  Training_labels, Training_Images
 
@@ -44,15 +54,22 @@ class FER2013_Input:
 			path = self.path + 'FER2013-Validation.csv'
 			with open(path) as csvfile:
 				readCSV = csv.reader(csvfile, delimiter = ',')
+				#row[0] = Labels, row[1] = Image Pixels
 				for row in readCSV:
 					Label = [0] * 7
 					Label[int(row[0])] = 1
 					Validation_labels.append(Label)
-					Image = row[1].split()
-					Image = [int(i) for i in Image]
-					Image48x48 = np.reshape(Image, (48, 48))
-					Image42x42 = Image48x48.copy()
-					Image42x42.resize(42,42)
+					image = row[1].split()
+					#Cast strings to integer 
+					image = [int(i) for i in image]
+					#Convert 1D array to 2D array 48x48
+					Image48x48 = np.reshape(image, (48, 48))
+					#Convert 2D array to Image
+					Image42x42 = Image.fromarray(np.uint8(Image48x48))
+					#Resize Image to 42x42
+					Image42x42 = resizeimage.resize_contain(Image42x42, [42, 42])
+					#Convert Image to 2D array 
+					Image42x42 = array(Image42x42)			
 					Validation_Images.append(Image42x42)
 			return  Validation_labels, Validation_Images
 
@@ -61,16 +78,23 @@ class FER2013_Input:
 			Testing_Images = []
 			path = self.path + 'FER2013-Testing.csv'
 			with open(path) as csvfile:
-				readCSV = csv.reader(csvfile, delimiter = ',')			
+				readCSV = csv.reader(csvfile, delimiter = ',')	
+				#row[0] = Labels, row[1] = Image Pixels	
 				for row in readCSV:
 					Label = [0] * 7
 					Label[int(row[0])] = 1
 					Testing_labels.append(Label)
-					Image = row[1].split()
-					Image = [int(i) for i in Image]
-					Image48x48 = np.reshape(Image, (48, 48))
-					Image42x42 = Image48x48.copy()
-					Image42x42.resize(42,42)
+					image = row[1].split()
+					#Cast strings to integer 
+					image = [int(i) for i in image]
+					#Convert 1D array to 2D array 48x48  
+					Image48x48 = np.reshape(image, (48, 48))
+					#Convert 2D array to Image
+					Image42x42 = Image.fromarray(np.uint8(Image48x48))
+					#Resize Image to 42x42
+					Image42x42 = resizeimage.resize_contain(Image42x42, [42, 42])
+					#Convert Image to 2D array 
+					Image42x42 = array(Image42x42)
 					Testing_Images.append(Image42x42)
 			return  Testing_labels, Testing_Images
 
