@@ -16,7 +16,7 @@ from resizeimage import resizeimage
 
 batch_size = 128
 num_classes = 7
-epochs = 1000
+epochs = 32
 
 img_rows, img_cols = 42,42
 fer = FER2013_Input_Keras('/home/alaa/Desktop/GP/')
@@ -56,7 +56,7 @@ model.add(Dropout(0.5))
 model.add(Dense(num_classes, activation='softmax'))
 
 model.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.SGD(lr=0.1, momentum=0.0, decay=0.0, nesterov=False),
+              optimizer=keras.optimizers.Adadelta(),
               metrics=['accuracy'])
 
 model.fit(Training_Images, Training_labels,
@@ -67,13 +67,15 @@ model.fit(Training_Images, Training_labels,
 score = model.evaluate(Testing_Images, Testing_labels, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
-'''
+
 
 model_json = model.to_json()
 with open("model.json", "w") as json_file:
     json_file.write(model_json)
+
+model.save_weights('model_weights.h5')
 print('Model Saved!')
-'''
+
 
 '''
 # load json and create model
