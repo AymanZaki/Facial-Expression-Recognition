@@ -7,7 +7,7 @@ from scipy.misc import toimage
 from resizeimage import resizeimage
 
 
-class FER2013_Input:
+class FER2013_Input_Keras:
 	Training_labels = []
 	Training_Images = []
 	Validation_labels = []

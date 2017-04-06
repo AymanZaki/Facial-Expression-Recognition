@@ -5,7 +5,7 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
 
-from FER2013_Input import FER2013_Input
+from FER2013_Input_Keras import FER2013_Input_Keras
 import csv
 import numpy as np
 import tensorflow as tf
@@ -16,10 +16,10 @@ from resizeimage import resizeimage
 
 batch_size = 128
 num_classes = 7
-epochs = 100
+epochs = 1000
 
 img_rows, img_cols = 42,42
-fer = FER2013_Input('/home/alaa/Desktop/GP/')
+fer = FER2013_Input_Keras('/home/alaa/Desktop/GP/')
 Training_labels, Training_Images = fer.FER2013_Training_Set()
 Testing_labels, Testing_Images = fer.FER2013_Testing_Set()
 Validation_labels, Validation_Images = fer.FER2013_Validation_Set()
@@ -56,7 +56,7 @@ model.add(Dropout(0.5))
 model.add(Dense(num_classes, activation='softmax'))
 
 model.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.Adadelta(),
+              optimizer=keras.optimizers.SGD(lr=0.1, momentum=0.0, decay=0.0, nesterov=False),
               metrics=['accuracy'])
 
 model.fit(Training_Images, Training_labels,
@@ -67,3 +67,26 @@ model.fit(Training_Images, Training_labels,
 score = model.evaluate(Testing_Images, Testing_labels, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
+'''
+
+model_json = model.to_json()
+with open("model.json", "w") as json_file:
+    json_file.write(model_json)
+print('Model Saved!')
+'''
+
+'''
+# load json and create model
+json_file = open('model.json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+loaded_model = model_from_json(loaded_model_json)
+
+# evaluate loaded model on test data
+loaded_model.compile(loss=keras.losses.categorical_crossentropy,
+              optimizer=keras.optimizers.Adadelta(),
+              metrics=['accuracy'])
+score = loaded_model.evaluate(Testing_Images, Testing_labels, verbose=0)
+print('Test loss:', score[0])
+print('Test accuracy:', score[1])
+'''
