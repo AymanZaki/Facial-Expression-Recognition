@@ -55,10 +55,12 @@ class Preprocessing:
 			else:
 				Gray_Image = image
 			if(Length > Max_Length or Width > Max_Width):
-				Gray_Image = self.Resize_Image(Gray_Image, Max_Length, Max_Width)
+				Length = int(Length * 0.3)
+				Width = int(Width * 0.3)
+				Gray_Image = self.Resize_Image(Gray_Image, Length, Width)
 
 			if(Channel > 0):
-				Gray_Image = self.Cast2Int(Gray_Image, min(Max_Length, Length), min(Max_Width, Width))
+				Gray_Image = self.Cast2Int(Gray_Image, Length, Width)
 			
 			detector = dlib.get_frontal_face_detector()
 			Faces = detector(Gray_Image, 1)
@@ -73,9 +75,9 @@ class Preprocessing:
 				Face_Pixels.append(Resized_Image)
 			print ("number of faces detected: ", len(Faces))	
 			
-		return Face_Pixels
+		return np.array(Face_Pixels)
 
-tmp = Preprocessing();
-Faces = tmp.Faces_Detection()
-for face in Faces:
-	toimage(face).show()
+#tmp = Preprocessing();
+#Faces = tmp.Faces_Detection()
+#for face in Faces:
+#	toimage(face).show()
