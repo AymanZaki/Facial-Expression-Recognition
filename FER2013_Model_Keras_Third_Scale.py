@@ -69,7 +69,7 @@ score = model.evaluate(Testing_Images, Testing_labels, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
-'''
+
 model_json = model.to_json()
 with open('model'+sys.argv[3]+'.json', "w") as json_file:
     json_file.write(model_json)
@@ -77,8 +77,12 @@ with open('model'+sys.argv[3]+'.json', "w") as json_file:
 model.save_weights('model'+sys.argv[3]+'_weights.h5')
 print('Model Saved!')
 
-
-
+'''
+model_json = model.to_json()
+with open('model'+sys.argv[3]+'.json', "w") as json_file:
+    json_file.write(model_json)
+model.save_weights('model'+sys.argv[3]+'_weights.h5')
+print('Model Saved!')
 # load json and create model
 json_file = open('model.json', 'r')
 loaded_model_json = json_file.read()
