@@ -19,8 +19,8 @@ batch_size = 128
 num_classes = 7
 epochs = int(sys.argv[1])
 
-img_rows, img_cols = 84, 84
-fer = FER2013_Input_Keras('/home/alaa/Desktop/GP/', 2)
+img_rows, img_cols = 42,42
+fer = FER2013_Input_Keras('/home/alaa/Desktop/GP/')
 Training_labels, Training_Images = fer.FER2013_Training_Set()
 Testing_labels, Testing_Images = fer.FER2013_Testing_Set()
 Validation_labels, Validation_Images = fer.FER2013_Validation_Set()
@@ -41,11 +41,11 @@ Validation_labels = keras.utils.to_categorical(Validation_labels, num_classes)
 Testing_labels = keras.utils.to_categorical(Testing_labels, num_classes)
 
 model = Sequential()
-model.add(Conv2D(32, kernel_size=(7, 7),
+model.add(Conv2D(32, kernel_size=(5, 5),
                  activation='relu',
                  input_shape=input_shape))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(32, (5, 5), activation='relu'))
+model.add(Conv2D(32, (4, 4), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(64, (5, 5), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -53,6 +53,8 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 model.add(Flatten())
 model.add(Dense(3072, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(1536, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(num_classes, activation='softmax'))
 
@@ -69,17 +71,22 @@ score = model.evaluate(Testing_Images, Testing_labels, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
-'''
+
 model_json = model.to_json()
 with open('model'+sys.argv[3]+'.json', "w") as json_file:
     json_file.write(model_json)
+
 model.save_weights('model'+sys.argv[3]+'_weights.h5')
 print('Model Saved!')
+
+
+'''
 # load json and create model
 json_file = open('model.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 loaded_model = model_from_json(loaded_model_json)
+
 # evaluate loaded model on test data
 loaded_model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),

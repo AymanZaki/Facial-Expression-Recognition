@@ -1,5 +1,12 @@
-import tensorflow as tf
+#import tensorflow as tf
 from FER2013_Input import FER2013_Input
+import csv
+import numpy as np
+import tensorflow as tf
+from PIL import Image
+from numpy import array
+from scipy.misc import toimage
+from resizeimage import resizeimage
 #from tensorflow.examples.tutorials.mnist import input_data
 #mnist = input_data.read_data_sets("/tmp/data/", one_hot = True)
 
@@ -8,7 +15,10 @@ batch_size = 128
 
 
 x = tf.placeholder('float', [None, 42, 42])
-y = tf.placeholder('float', [None, 7])#Ali
+y = tf.placeholder('float')#Ali
+
+keep_rate = 0.8
+keep_prob = tf.placeholder(tf.float32)
 
 def conv2d(x,W):
      #The strides parameter dictates the movement of the window, 1 pixel at a time
@@ -39,7 +49,8 @@ def convolutional_neural_network(x):
      }
 
      x = tf.reshape(x, shape=[-1, 42, 42, 1])
-
+     #Image42x42 = Image.fromarray(np.uint8(x))
+     #toimage(Image42x42).show()
 
      conv1 = tf.nn.relu(conv2d(x, weights['W_conv1']) + biases['b_conv1'])
      conv1 = maxpool2d(conv1)
@@ -52,11 +63,13 @@ def convolutional_neural_network(x):
 
      #The image by now is 6x6
      fc1 = tf.reshape(conv3, [-1, 6*6*64])
-     fc1 = tf.reshape(fc1, [-1, 6*6*64])
+     #fc1 = tf.reshape(fc1, [-1, 6*6*64])
      fc1 = tf.nn.relu(tf.matmul(fc1, weights['W_fc1']) + biases['b_fc1'])
 
     #not sure if we should reshape fc2
+     fc2 = tf.reshape(fc1,[-1,3072])
      fc2 = tf.nn.relu(tf.matmul(fc1, weights['W_fc2']) + biases['b_fc2'])
+     fc2 = tf.nn.dropout(fc2, keep_rate)
      return fc2
 
 def train_neural_network(x):
@@ -67,9 +80,9 @@ def train_neural_network(x):
      prediction = convolutional_neural_network(x)#Ali
      
      cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=prediction))#Ali
-     optimizer = tf.train.GradientDescentOptimizer(0.1).minimize(cost)
+     optimizer = tf.train.GradientDescentOptimizer(0.00001).minimize(cost)
      
-     hm_epochs = 16
+     hm_epochs = 32
      with tf.Session() as sess:
         #training_images = tf.image.resize_images(training_images, (42, 42))
         sess.run(tf.global_variables_initializer())#Ali
@@ -79,8 +92,8 @@ def train_neural_network(x):
             epoch_loss = 0
             for batchNum in range(int((28709+batch_size)/batch_size)):
                 epoch_y, epoch_x = fer.Get_batch(batchNum, 'Training')
-                #epoch_x = tf.image.resize_images(epoch_x, (42,42))
-                #print (epoch_x[0].size)
+             
+                
                 _, c = sess.run([optimizer, cost], feed_dict={x: epoch_x, y: epoch_y})
                 epoch_loss += c
                 #print('Hello')
@@ -88,6 +101,7 @@ def train_neural_network(x):
             print('Epoch', epoch+1, 'completed out of',hm_epochs,'loss:',epoch_loss)
 
         correct = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
+        #print('Correct in training: ',correct)
         testing_labels, testing_images = fer.FER2013_Testing_Set()
         accuracy = tf.reduce_mean(tf.cast(correct, 'float'))
         print('Accuracy:',accuracy.eval({x:testing_images, y:testing_labels}))

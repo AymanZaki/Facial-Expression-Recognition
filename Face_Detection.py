@@ -10,8 +10,8 @@ from scipy.misc import toimage
 
 Resize_Length = 42
 Resize_Width = 42
-Max_Length = 1000
-Max_Width = 1000
+Max_Length = 100000
+Max_Width = 100000
 
 class Preprocessing:
 
@@ -29,6 +29,7 @@ class Preprocessing:
 		#Gray_Image = Image.fromarray(np.uint8(Gray_Image))
 		#Gray_Image = resizeimage.resize_contain(Gray_Image, [Max_Length, Max_Width])
 		Resized_Image = resize(image, (Length, Width), mode='reflect')
+		Resized_Image = self.Cast2Int(Resized_Image, Length, Width)
 		#Gray_Image = np.uint8(Gray_Image.convert('L'))
 		return Resized_Image
 
@@ -55,12 +56,10 @@ class Preprocessing:
 			else:
 				Gray_Image = image
 			if(Length > Max_Length or Width > Max_Width):
-				Length = int(Length * 0.3)
-				Width = int(Width * 0.3)
-				Gray_Image = self.Resize_Image(Gray_Image, Length, Width)
+				Gray_Image = self.Resize_Image(Gray_Image, Max_Length, Max_Width)
 
 			if(Channel > 0):
-				Gray_Image = self.Cast2Int(Gray_Image, Length, Width)
+				Gray_Image = self.Cast2Int(Gray_Image, min(Max_Length, Length), min(Max_Width, Width))
 			
 			detector = dlib.get_frontal_face_detector()
 			Faces = detector(Gray_Image, 1)
@@ -77,7 +76,5 @@ class Preprocessing:
 			
 		return np.array(Face_Pixels)
 
-#tmp = Preprocessing();
-#Faces = tmp.Faces_Detection()
-#for face in Faces:
-#	toimage(face).show()
+tmp = Preprocessing()
+tmp.Faces_Detection()
