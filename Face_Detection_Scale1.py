@@ -11,8 +11,8 @@ from scipy.misc import imresize
 
 Resize_Length = 42
 Resize_Width = 42
-Max_Length = 1000
-Max_Width = 1000
+Max_Length = 1500
+Max_Width = 1500
 
 class Preprocessing:
 
@@ -36,9 +36,9 @@ class Preprocessing:
 
 	def Cast2Int(self, image, Length, Width):
 		Gray_Image = []
-		for i in range(min(Max_Length, Length)):
+		for i in range(Length):
 			Gray_Image.append([])
-			for j in range(min(Max_Width, Width)):
+			for j in range(Width):
 				Gray_Image[i].append (np.uint8(image[i][j] * 255.0))
 		Gray_Image = np.asarray(Gray_Image)
 		return Gray_Image
@@ -61,7 +61,7 @@ class Preprocessing:
 				Gray_Image = self.Cast2Int(Gray_Image, Length, Width)
 			
 			detector = dlib.get_frontal_face_detector()
-			Faces = detector(Gray_Image, 1)
+			Faces = detector(Gray_Image, 2)
 			Face_Pixels = []
 			for Face in Faces:
 				x1 = Face.top()

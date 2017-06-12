@@ -16,9 +16,10 @@ from scipy.misc import toimage
 from resizeimage import resizeimage
 from scipy.misc import toimage
 
-import Face_Detection_Scale1
-import Face_Detection_Scale2
-import Face_Detection_Scale3
+import Face_Detection
+#import Face_Detection_Scale1
+#import Face_Detection_Scale2
+#import Face_Detection_Scale3
 import dlib
 import math
 from skimage import io
@@ -29,16 +30,15 @@ batch_size = 1
 num_classes = 7
 epochs = 1000
 
-detect = Face_Detection_Scale1.Preprocessing()
-Input_Images_Original = detect.Faces_Detection()
-out = Input_Images_Original
+detect = Face_Detection.Preprocessing()
+Faces_Scale1, Faces_Scale2, Faces_Scale3 = detect.Faces_Detection()
 img_rows, img_cols = 42,42
 
 
 #fer = FER2013_Input_Keras('/home/alaa/Desktop/GP/')
 #Testing_labels, Testing_Images = fer.FER2013_Testing_Set()
 #Testing_Images = Testing_Images[0]
-Input_Images = Input_Images_Original[:]
+Input_Images = Faces_Scale1[:]
 Input_Images = Input_Images.reshape(Input_Images.shape[0], img_rows, img_cols, 1)
 input_shape = (img_rows, img_cols, 1)
 
@@ -61,15 +61,13 @@ loaded_model.compile(loss=keras.losses.categorical_crossentropy,
               metrics=['accuracy'])
 score1 = loaded_model.predict(Input_Images, verbose=0)
 
-detect = Face_Detection_Scale2.Preprocessing()
-Input_Images = detect.Faces_Detection()
-out = Input_Images
 img_rows, img_cols = 84,84
 
 #fer = FER2013_Input_Keras('/home/alaa/Desktop/GP/')
 #Testing_labels, Testing_Images = fer.FER2013_Testing_Set()
 #Testing_Images = Testing_Images[0]
-Input_Images = Input_Images.reshape(Input_Images.shape[0], img_rows, img_cols, 1)
+
+Input_Images = Faces_Scale2.reshape(Input_Images.shape[0], img_rows, img_cols, 1)
 input_shape = (img_rows, img_cols, 1)
 
 Input_Images = Input_Images.astype('float32')
@@ -91,15 +89,12 @@ loaded_model.compile(loss=keras.losses.categorical_crossentropy,
               metrics=['accuracy'])
 score2 = loaded_model.predict(Input_Images, verbose=0)
 
-detect = Face_Detection_Scale3.Preprocessing()
-Input_Images = detect.Faces_Detection()
-out = Input_Images
 img_rows, img_cols = 90,90
 
 #fer = FER2013_Input_Keras('/home/alaa/Desktop/GP/')
 #Testing_labels, Testing_Images = fer.FER2013_Testing_Set()
 #Testing_Images = Testing_Images[0]
-Input_Images = Input_Images.reshape(Input_Images.shape[0], img_rows, img_cols, 1)
+Input_Images = Faces_Scale3.reshape(Input_Images.shape[0], img_rows, img_cols, 1)
 input_shape = (img_rows, img_cols, 1)
 
 Input_Images = Input_Images.astype('float32')

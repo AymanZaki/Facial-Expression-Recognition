@@ -7,9 +7,14 @@ from skimage.transform import resize
 from PIL import Image
 from resizeimage import resizeimage
 from scipy.misc import toimage
+from scipy.misc import imresize
 
-Resize_Length = 42
-Resize_Width = 42
+Resize_Length_Scale1 = 42
+Resize_Width_Scale1 = 42
+Resize_Length_Scale2 = 84
+Resize_Width_Scale2 = 84
+Resize_Length_Scale3 = 90
+Resize_Width_Scale3 = 90
 Max_Length = 1000
 Max_Width = 1000
 
@@ -26,10 +31,7 @@ class Preprocessing:
 		return [Length, Width, Channel]
 	
 	def Resize_Image(self, image, Length, Width):
-		#Gray_Image = Image.fromarray(np.uint8(Gray_Image))
-		#Gray_Image = resizeimage.resize_contain(Gray_Image, [Max_Length, Max_Width])
-		Resized_Image = resize(image, (Length, Width), mode='reflect')
-		#Gray_Image = np.uint8(Gray_Image.convert('L'))
+		Resized_Image = resize(image, (Length, Width), mode='reflect')		
 		return Resized_Image
 
 	def Rgb2Gray(self, image):
@@ -38,9 +40,9 @@ class Preprocessing:
 
 	def Cast2Int(self, image, Length, Width):
 		Gray_Image = []
-		for i in range(min(Max_Length, Length)):
+		for i in range(Length):
 			Gray_Image.append([])
-			for j in range(min(Max_Width, Width)):
+			for j in range(Width):
 				Gray_Image[i].append (np.uint8(image[i][j] * 255.0))
 		Gray_Image = np.asarray(Gray_Image)
 		return Gray_Image
@@ -54,7 +56,7 @@ class Preprocessing:
 				Gray_Image = self.Rgb2Gray(image)
 			else:
 				Gray_Image = image
-			if(Length > Max_Length or Width > Max_Width):
+			if(Length * Width > Max_Length * Max_Width):
 				Length = int(Length * 0.3)
 				Width = int(Width * 0.3)
 				Gray_Image = self.Resize_Image(Gray_Image, Length, Width)
@@ -63,19 +65,30 @@ class Preprocessing:
 				Gray_Image = self.Cast2Int(Gray_Image, Length, Width)
 			
 			detector = dlib.get_frontal_face_detector()
-			Faces = detector(Gray_Image, 1)
-			Face_Pixels = []
+			Faces = detector(Gray_Image, 2)
+			Faces_Scale1 = []
+			Faces_Scale2 = []
+			Faces_Scale3 = []
 			for Face in Faces:
 				x1 = Face.top()
 				y1 = Face.left()
 				x2 = Face.bottom()
 				y2 = Face.right()
 				Cropped_Image = Gray_Image[x1:x2, y1:y2]
-				Resized_Image = self.Resize_Image(Cropped_Image, Resize_Length, Resize_Width)
-				Face_Pixels.append(Resized_Image)
+				Resized_Image_Scale1 = self.Resize_Image(Cropped_Image, Resize_Length_Scale1, Resize_Width_Scale1)
+				Resized_Image_Scale2 = self.Resize_Image(Cropped_Image, Resize_Length_Scale2, Resize_Width_Scale2)
+				Resized_Image_Scale3 = self.Resize_Image(Cropped_Image, Resize_Length_Scale3, Resize_Width_Scale3)
+				Faces_Scale1.append(Resized_Image_Scale1)
+				Faces_Scale2.append(Resized_Image_Scale2)
+				Faces_Scale3.append(Resized_Image_Scale3)
+				#toimage(Resized_Image_Scale1).show()
+				#toimage(Resized_Image_Scale2).show()
+				#toimage(Resized_Image_Scale3).show()
 			print ("number of faces detected: ", len(Faces))	
-			
-		return np.array(Face_Pixels)
+			Faces_Scale1 = np.array(Faces_Scale1)
+			Faces_Scale2 = np.array(Faces_Scale2)
+			Faces_Scale3 = np.array(Faces_Scale3)
+		return Faces_Scale1, Faces_Scale2, Faces_Scale3
 
 #tmp = Preprocessing();
 #Faces = tmp.Faces_Detection()
