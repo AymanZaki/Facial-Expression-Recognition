@@ -21,6 +21,8 @@ import Face_Detection_Scale2
 import Face_Detection_Scale3
 import dlib
 import math
+from skimage import io
+import sys
 
 
 batch_size = 1
@@ -31,6 +33,7 @@ detect = Face_Detection_Scale1.Preprocessing()
 Input_Images_Original = detect.Faces_Detection()
 out = Input_Images_Original
 img_rows, img_cols = 42,42
+
 
 #fer = FER2013_Input_Keras('/home/alaa/Desktop/GP/')
 #Testing_labels, Testing_Images = fer.FER2013_Testing_Set()
@@ -133,11 +136,6 @@ for i in range(len(Input_Images)):
   dlib.hit_enter_to_continue()
 #print(score)
 '''
-
-
-
-
-
 
 classes = {0:'Angry', 1:'Disgust', 2:'Fear', 3:'Happy', 4:'Sad', 5:'Surprise', 6:'Neutral'}
 
